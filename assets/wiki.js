@@ -539,6 +539,19 @@ hero.innerHTML=
 hero.querySelector(".m-eyebrow").textContent=page.eyebrow||whereOf(page);
 hero.querySelector("h1").textContent=page.title;
 hero.querySelector(".m-lead").textContent=page.summary||"";
+/* Quick buttons ("Frequently visited" on the home page); the first one is highlighted. */
+if(page.quick&&page.quick.length){
+var actions=el("div","m-actions w-quick");
+actions.appendChild(el("span","w-quick-label",page.path?"Quick links":"Frequently visited"));
+page.quick.forEach(function(path,i){
+if(!PAGES[path])return;
+var button=el("a","m-btn"+(i===0?" m-btn-primary":""),escapeHtml(PAGES[path].title));
+button.href=urlOf(path);
+if(i===0)button.style.setProperty("--btn-accent",accentOf(path));
+actions.appendChild(button);
+});
+hero.appendChild(actions);
+}
 main.appendChild(hero);
 
 /* The home page shows the branches as big cards; other pages are one article. */

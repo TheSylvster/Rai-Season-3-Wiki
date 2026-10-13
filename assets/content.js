@@ -19,6 +19,9 @@
  *   {type:"table", head:[...], rows:[[...], ...]}
  *   {type:"children"}                                cards for the sub-pages
  *
+ * A page can also have quick: ["path", ...]: buttons in its heading box
+ * (the home page uses this for "Frequently visited").
+ *
  * Images live in /images and are named after the page they belong to.
  * The crafting information comes from JR's Crafting Guide for Season 3.
  */
@@ -26,7 +29,7 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.1",
+version: "V1.0.2",
 
 /* The menu bar: the home page, the four branches and Tips, each with its own accent colour. */
 sections: [
@@ -44,6 +47,8 @@ pages: [
 
 {path: "", title: "Rai Season 3 Wiki", section: "",
 eyebrow: "The Rai Minecraft server",
+/* Buttons in the big heading box. The first one is highlighted. */
+quick: ["tips", "agriculture/food", "industrial/muskets", "industrial/shredder", "geology/rare-ores"],
 summary: "The guide to Season 3: custom crops and cooking, steel and muskets, new ores, and alchemy.",
 blocks: [
 {type: "text", html: "Season 3 adds four new branches of crafting to the server. Each one brings its own materials, machines and recipes, and many of them depend on each other. Pick a branch to get started, or use the search."},
