@@ -1,0 +1,377 @@
+/*
+ * ==================== RAI SEASON 3 WIKI: STYLES ====================
+ *
+ * The "liquid glass" look, shared with InterPhyr Modern: clear glass
+ * panels floating over a slowly drifting background of colour ribbons
+ * and contour lines. Uses the system font, so nothing is downloaded.
+ * Each branch of the wiki has its own accent colour (--accent).
+ */
+
+:root{
+--m-bg:#070b1a;
+--accent:#8fa2ff;
+--m-text:rgba(255,255,255,.94);
+--m-muted:rgba(255,255,255,.66);
+--m-faint:rgba(255,255,255,.42);
+--m-line:rgba(255,255,255,.16);
+--m-blue:#5b7cff;
+--m-violet:#9a5bff;
+--m-red:#ff5a3c;
+--m-teal:#22d3b6;
+--m-radius:28px;
+--m-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+html{background:var(--m-bg)}
+
+body.wiki{
+margin:0;
+min-height:100vh;
+background:var(--m-bg);
+color:var(--m-text);
+font-family:var(--m-font);
+font-size:16px;
+line-height:1.6;
+-webkit-font-smoothing:antialiased;
+overflow-x:hidden;
+}
+
+/* ---------- Background: slow-moving colour blobs ---------- */
+
+.m-backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+/* The painted scene (see paintBackdrop in modern.js), a little larger than the screen, drifting slowly. */
+.m-backdrop-art{position:absolute;left:-7.5vw;top:-7.5vh;animation:m-drift 80s ease-in-out infinite alternate;will-change:transform}
+@keyframes m-drift{
+0%{transform:translate(0,0) scale(1)}
+50%{transform:translate(3vw,2vh) scale(1.03)}
+100%{transform:translate(-2vw,4vh) scale(1.015)}
+}
+
+/* ---------- Glass ---------- */
+
+/*
+ * Thick, clear glass: a light tint and a lighter blur, so the scene
+ * behind stays visible; a bright top edge and a darker lower edge
+ * give it depth, like a slab of glass catching the light from above.
+ */
+body.wiki .glass{
+position:relative;
+/* The dark tint underneath keeps text readable over bright parts of the scene. */
+background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03) 45%,rgba(255,255,255,.02) 70%,rgba(255,255,255,.06)),rgba(8,12,32,.34);
+border:0;
+border-radius:var(--m-radius);
+-webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);
+backdrop-filter:blur(14px) saturate(185%) brightness(1.06);
+box-shadow:
+inset 0 1.5px 0 rgba(255,255,255,.42),
+inset 1px 0 0 rgba(255,255,255,.1),
+inset -1px 0 0 rgba(255,255,255,.06),
+inset 0 -1px 0 rgba(255,255,255,.14),
+inset 0 22px 34px -30px rgba(255,255,255,.35),
+inset 0 -26px 40px -30px rgba(0,0,10,.55),
+0 30px 70px -30px rgba(0,0,0,.75),
+0 2px 6px rgba(0,0,0,.18);
+}
+/* The rim: bright where the light catches it, with a faint colour fringe. */
+body.wiki .glass::before{
+content:"";
+position:absolute;
+inset:0;
+border-radius:inherit;
+padding:1.5px;
+background:conic-gradient(from 210deg at 50% 50%,rgba(255,255,255,.65),rgba(255,255,255,.08) 18%,rgba(120,180,255,.35) 30%,rgba(255,255,255,.04) 42%,rgba(255,255,255,.04) 55%,rgba(255,150,90,.3) 66%,rgba(255,255,255,.12) 78%,rgba(255,255,255,.65));
+-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+-webkit-mask-composite:xor;
+mask-composite:exclude;
+pointer-events:none;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+body.wiki .glass{background:rgba(22,28,56,.94)}
+}
+
+/* ---------- Layout ---------- */
+
+.m-shell{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:18px 20px 40px}
+/*
+ * Page changes: the panels fade out, then the new ones rise in one
+ * after another. Each panel animates on its own (not the whole page),
+ * so the frosted blur keeps working during the animation.
+ */
+#main .glass,#main .m-section-head{transition:opacity .2s ease,transform .2s ease}
+#main.m-leaving .glass,#main.m-leaving .m-section-head{opacity:0;transform:translateY(-10px) scale(.99)}
+#main.m-enter .glass,#main.m-enter .m-section-head{animation:m-rise .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 65ms)}
+@keyframes m-rise{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:none}}
+.m-section{margin-top:56px}
+.m-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 4px 18px}
+body.wiki h1,body.wiki h2,body.wiki h3{margin:0;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+body.wiki h2{font-size:28px}
+body.wiki h3{font-size:19px}
+body.wiki p{margin:0 0 12px}
+body.wiki a{color:#a9bcff;text-decoration:none}
+body.wiki a:hover{color:#fff;text-decoration:underline}
+.m-eyebrow{display:inline-block;margin-bottom:14px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m-muted)}
+.m-muted{color:var(--m-muted)}
+.m-small{font-size:13px;color:var(--m-faint)}
+.m-grid{display:grid;gap:18px}
+.m-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.m-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.m-card{padding:26px 28px}
+body.wiki .m-card>h2{margin-bottom:14px}
+
+/* ---------- Top bar ---------- */
+
+.m-topbar{position:sticky;top:14px;z-index:10;display:flex;align-items:center;gap:18px;padding:10px 12px 10px 20px;border-radius:999px}
+.m-brand{display:flex;align-items:center;gap:10px;color:#fff!important;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none!important;white-space:nowrap}
+.m-brand-mark{width:26px;height:26px;border-radius:50%;background:conic-gradient(from 200deg,var(--m-blue),var(--m-violet),var(--m-red),var(--m-teal),var(--m-blue));box-shadow:0 0 18px rgba(154,91,255,.6),inset 0 0 0 2px rgba(255,255,255,.35)}
+/* Room above and below the menu, so the lens can swell while it moves. */
+.m-nav{position:relative;display:flex;margin:-10px -10px -10px auto;padding:10px}
+/* The real menu text is cut out under the lens, where its refracted copy shows instead. */
+.m-nav-items{display:flex;gap:4px}
+.m-lens-cut-x{-webkit-mask-image:linear-gradient(90deg,#000 var(--cut-a,0px),transparent var(--cut-a,0px),transparent var(--cut-b,0px),#000 var(--cut-b,0px));mask-image:linear-gradient(90deg,#000 var(--cut-a,0px),transparent var(--cut-a,0px),transparent var(--cut-b,0px),#000 var(--cut-b,0px))}
+.m-lens-cut-y{-webkit-mask-image:linear-gradient(180deg,#000 var(--cut-a,0px),transparent var(--cut-a,0px),transparent var(--cut-b,0px),#000 var(--cut-b,0px));mask-image:linear-gradient(180deg,#000 var(--cut-a,0px),transparent var(--cut-a,0px),transparent var(--cut-b,0px),#000 var(--cut-b,0px))}
+.m-nav::-webkit-scrollbar{display:none}
+body.wiki .m-nav a,.m-nav-soon{padding:8px 14px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap;color:var(--m-muted);text-decoration:none!important;transition:background .2s,color .2s}
+body.wiki .m-nav a:hover{background:rgba(255,255,255,.1);color:#fff}
+body.wiki .m-nav a.active{color:#fff}
+body.wiki .m-nav a.active:hover{background:none}
+/* The sliding glass lens that marks the current page (see modern.js). */
+.m-lens{position:absolute;left:0;top:0;z-index:2;border-radius:999px;overflow:hidden;pointer-events:none;background:rgba(255,255,255,.035);box-shadow:inset 0 1px 1px rgba(255,255,255,.7),inset 0 -1px 1px rgba(255,255,255,.2),inset 0 0 10px rgba(255,255,255,.12),0 4px 12px rgba(0,0,0,.34);will-change:transform,width,height}
+/* A faint rainbow fringe around the rim, like light split by thick glass. */
+.m-lens::before{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;padding:1.5px;background:conic-gradient(from 200deg,rgba(255,90,90,0),rgba(255,140,60,.6) 8%,rgba(255,230,90,0) 22%,rgba(255,255,255,0) 45%,rgba(80,190,255,.55) 62%,rgba(170,100,255,.5) 72%,rgba(255,90,90,0) 86%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:blur(.3px)}
+/* The shine across the top of the glass. */
+.m-lens::after{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.04) 45%,rgba(255,255,255,0) 60%,rgba(255,255,255,.08));pointer-events:none}
+/* Larger than the lens, so the rim has something to bend in (the lens clips it). */
+.m-lens-inner{position:absolute;inset:-14px;z-index:1}
+.m-lens-track{position:absolute;left:0;top:0;transform-origin:0 0;-webkit-mask-image:none;mask-image:none}
+body.wiki .m-lens-copy{color:#fff;background:none;box-shadow:none}
+.m-menu-links .m-lens{opacity:var(--lens-appear,1)}
+
+.m-nav-soon{color:var(--m-faint);cursor:default}
+
+/* ---------- Buttons ---------- */
+
+.m-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.m-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;font-size:15px;font-weight:600;color:#fff!important;text-decoration:none!important;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);transition:transform .15s,background .2s}
+.m-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.m-btn-primary{background:linear-gradient(135deg,var(--m-blue),var(--m-violet));border-color:rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 30px -10px rgba(91,124,255,.8)}
+.m-btn-primary:hover{background:linear-gradient(135deg,#6d8bff,#a76dff)}
+.m-btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+
+/* ---------- Hero ---------- */
+
+.m-hero{margin-top:44px;padding:56px 56px 50px;overflow:hidden}
+/* Extra room below the line, so letters like y and p are not cut off by the gradient. */
+body.wiki .m-hero h1{font-size:clamp(44px,7vw,84px);padding-bottom:.14em;margin-bottom:-.14em;line-height:1.12;letter-spacing:-.045em;background:linear-gradient(120deg,#fff 20%,#c9d4ff 55%,#e7c9ff 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.m-hero .m-lead{max-width:640px;margin-top:18px;font-size:19px;color:var(--m-muted)}
+.m-hero-orb{position:absolute;right:-60px;top:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.55),rgba(255,255,255,.08) 45%,rgba(255,255,255,0) 70%);opacity:.22;pointer-events:none}
+
+/* ---------- Lists ---------- */
+
+.m-checks{list-style:none;margin:0;padding:0}
+.m-checks li{position:relative;padding:8px 0 8px 32px;border-bottom:1px solid var(--m-line)}
+.m-checks li:last-child{border-bottom:0}
+.m-checks li::before{content:"";position:absolute;left:0;top:13px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--m-teal),var(--m-blue));box-shadow:0 0 12px rgba(34,211,182,.5)}
+.m-checks li::after{content:"";position:absolute;left:6px;top:17px;width:5px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+/* ---------- Nations ---------- */
+
+.m-nation{display:flex;flex-direction:column;gap:14px}
+.m-nation-head{display:flex;align-items:center;gap:14px}
+.m-nation-head img{width:58px;height:58px;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+.m-facts{margin:0;display:grid;gap:8px}
+.m-facts div{display:flex;justify-content:space-between;gap:12px;padding-top:8px;border-top:1px solid var(--m-line);font-size:14px}
+.m-facts dt{color:var(--m-faint)}
+.m-facts dd{margin:0;text-align:right;font-weight:500}
+
+/* ---------- News ---------- */
+
+.m-story{display:flex;flex-direction:column}
+.m-story-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px;color:var(--m-faint)}
+.m-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--m-red),#ff9a3c);box-shadow:0 0 14px rgba(255,90,60,.45)}
+body.wiki .m-story h3{margin-bottom:10px}
+.m-story .m-lead{color:var(--m-muted)}
+body.wiki .m-story-featured h3{font-size:26px}
+.m-more{margin-top:auto}
+.m-more>summary{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:7px 16px;border-radius:999px;list-style:none;cursor:pointer;font-size:14px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);user-select:none}
+.m-more>summary::-webkit-details-marker{display:none}
+.m-more>summary:hover{background:rgba(255,255,255,.18)}
+.m-more>summary::after{content:"Read more"}
+.m-more[open]>summary::after{content:"Show less"}
+.m-more[open]>summary{margin-bottom:14px}
+.m-more p{color:var(--m-text)}
+
+.m-callout{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;border-radius:22px}
+.m-callout-icon{flex-shrink:0;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--m-red),#ff9a3c)}
+.m-callout p{margin:0}
+
+/* ---------- Contact ---------- */
+
+.m-contact{display:flex;flex-direction:column;gap:6px;padding:22px 24px}
+.m-contact b{font-size:16px}
+.m-contact .m-muted{font-size:14px}
+.m-contact a{margin-top:6px;font-size:14px;font-weight:600}
+
+/* ---------- Phone menu: a glass button that melts open into a panel ---------- */
+
+.m-menu{display:none;position:fixed;top:10px;right:16px;z-index:30;pointer-events:none}
+.m-menu-glass{position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.15),rgba(255,255,255,.04) 50%,rgba(255,255,255,.08)),rgba(8,12,32,.45);-webkit-backdrop-filter:blur(16px) saturate(185%) brightness(1.06);backdrop-filter:blur(16px) saturate(185%) brightness(1.06)}
+.m-menu-rim,.m-menu-shadow{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.m-menu-rim path{fill:none;stroke:url(#m-menu-rim-g);stroke-width:1.5}
+.m-menu-shadow{filter:blur(12px);opacity:.75}
+.m-menu-shadow path{fill:rgba(0,0,8,.6);transform:translateY(8px)}
+.m-menu-button{position:absolute;right:0;top:0;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;display:grid;place-content:center;gap:5px;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.m-menu-button span{display:block;width:18px;height:2px;border-radius:2px;background:#fff;transition:transform .4s cubic-bezier(.3,1.5,.5,1)}
+.m-menu.opening .m-menu-button span:first-child{transform:translateY(3.5px) rotate(45deg)}
+.m-menu.opening .m-menu-button span:last-child{transform:translateY(-3.5px) rotate(-45deg)}
+.m-menu-links{position:absolute;inset:0;padding:56px 10px 0;display:flex;flex-direction:column;pointer-events:auto}
+.m-menu:not(.open) .m-menu-links{pointer-events:none}
+body.wiki .m-menu-links a,.m-menu-soon{display:flex;align-items:center;justify-content:space-between;height:46px;padding:0 14px;border-radius:14px;font-size:16px;font-weight:600;color:#fff;text-decoration:none}
+.m-menu-items{display:flex;flex-direction:column}
+.m-menu-soon{color:var(--m-faint);font-weight:500}
+.m-menu-soon small{font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- Placeholders, notices, footer ---------- */
+
+.m-skeleton{height:220px;margin-top:44px;overflow:hidden}
+.m-skeleton::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(100deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.1) 50%,rgba(255,255,255,0) 70%);background-size:200% 100%;animation:m-shimmer 1.4s linear infinite}
+@keyframes m-shimmer{from{background-position:150% 0}to{background-position:-50% 0}}
+.m-notice{max-width:560px;margin:18vh auto 0;padding:44px;text-align:center}
+body.wiki .m-notice h1{font-size:32px;margin-bottom:12px}
+.m-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:64px;padding:22px 26px;border-radius:22px;font-size:13px;color:var(--m-faint)}
+.m-footer a{color:var(--m-muted)}
+
+/* ---------- Phones and tablets ---------- */
+
+@media (max-width:860px){
+/* Narrow screens: the menu scrolls sideways when it does not fit. */
+.m-nav{overflow-x:auto;scrollbar-width:none}
+.m-grid-3{grid-template-columns:1fr}
+.m-grid-2{grid-template-columns:1fr}
+.m-hero{padding:38px 28px 34px}
+}
+@media (max-width:600px){
+.m-shell{padding:12px 16px 32px}
+.m-topbar{top:10px;gap:10px;padding:8px 8px 8px 14px}
+/* Phones: the round glass menu button replaces the menu bar (see buildMenu in modern.js). */
+.m-nav{display:none}
+.m-topbar{margin-right:56px}
+.m-menu{display:block}
+body.wiki .m-nav a,.m-nav-soon{padding:7px 11px;font-size:13px}
+.m-card{padding:22px 20px}
+.m-hero .m-lead{font-size:17px}
+.m-section{margin-top:40px}
+body.wiki h2{font-size:24px}
+/* Lighter blur on phones, which have less graphics power. */
+body.wiki .glass{-webkit-backdrop-filter:blur(12px) saturate(180%) brightness(1.06);backdrop-filter:blur(12px) saturate(180%) brightness(1.06)}
+}
+@media (prefers-reduced-motion:reduce){
+#main .glass,#main .m-section-head{transition:none}
+#main.m-enter .glass,#main.m-enter .m-section-head{animation:none}
+.m-backdrop-art,.m-skeleton::after{animation:none}
+.m-btn{transition:none}
+}
+
+/* ==================== Wiki components ==================== */
+
+/* The accent colour of the current branch tints eyebrows, numbers and glows. */
+.m-eyebrow{color:var(--accent)}
+body.wiki .m-hero h1{background:linear-gradient(120deg,#fff 25%,color-mix(in srgb,var(--accent) 45%,#fff) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Breadcrumbs: Home > Industrial > Muskets */
+.w-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:28px 4px -26px;font-size:13px;color:var(--m-faint)}
+body.wiki .w-crumbs a{color:var(--m-muted)}
+.w-crumbs span[aria-hidden]{opacity:.5}
+
+/* Article layout */
+.w-article{margin-top:22px;padding:30px 34px}
+.w-article>*+*{margin-top:18px}
+body.wiki .w-article>h2{margin-top:30px;font-size:22px}
+body.wiki .w-article p{margin:0;color:var(--m-text)}
+.w-article ul{margin:0;padding-left:22px}
+.w-article li{margin:4px 0}
+
+.w-callout{display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:18px;background:color-mix(in srgb,var(--accent) 14%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent)}
+.w-callout::before{content:"i";flex-shrink:0;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-weight:800;font-size:13px;font-style:italic;font-family:Georgia,serif;color:#0b1020;background:var(--accent)}
+
+.w-steps{counter-reset:step;list-style:none;margin:0;padding:0}
+.w-steps li{position:relative;margin:0;padding:10px 0 10px 46px;border-bottom:1px solid var(--m-line)}
+.w-steps li:last-child{border-bottom:0}
+.w-steps li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:8px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#0b1020;background:var(--accent);box-shadow:0 0 14px color-mix(in srgb,var(--accent) 55%,transparent)}
+body.wiki .w-steps-title{font-size:17px;margin:6px 0 2px}
+
+.w-table-wrap{overflow-x:auto;border-radius:16px;box-shadow:inset 0 0 0 1px var(--m-line)}
+.w-table{width:100%;border-collapse:collapse;font-size:15px}
+.w-table th,.w-table td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--m-line)}
+.w-table tr:last-child td{border-bottom:0}
+.w-table th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--m-muted);background:rgba(255,255,255,.04)}
+
+/* Recipe cards: a picture of the crafting grid, the name and what it takes. */
+.w-recipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.w-recipe{display:flex;flex-direction:column;gap:10px;margin:0;padding:12px;border-radius:20px;background:rgba(255,255,255,.05);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.07)}
+.w-recipe img{width:100%;height:150px;box-sizing:border-box;object-fit:contain;border-radius:12px;background:rgba(255,255,255,.92);padding:6px;cursor:zoom-in;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.w-recipe img:hover{transform:scale(1.02)}
+.w-recipe b{font-size:16px}
+.w-recipe span{font-size:13px;color:var(--m-muted)}
+body.wiki .w-recipes-title{font-size:17px;margin:4px 0 -4px}
+
+.w-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.w-gallery figure{margin:0;display:flex;flex-direction:column;gap:8px}
+.w-gallery img{width:100%;max-height:340px;box-sizing:border-box;object-fit:cover;border-radius:16px;cursor:zoom-in;box-shadow:0 10px 30px -12px rgba(0,0,0,.6);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.w-gallery img[src$=".png"]{object-fit:contain;background:rgba(255,255,255,.92);padding:6px}
+.w-gallery img:hover{transform:scale(1.015)}
+.w-gallery figcaption{font-size:13px;color:var(--m-muted)}
+
+/* Cards for sub-pages */
+.w-children{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+body.wiki a.w-card{display:flex;flex-direction:column;color:var(--m-text);text-decoration:none;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+body.wiki a.w-card:hover{transform:translateY(-4px);text-decoration:none}
+.w-card-img{position:relative;height:130px;background-size:cover;background-position:center;border-radius:var(--m-radius) var(--m-radius) 0 0}
+.w-card-img.w-contain{background-size:contain;background-repeat:no-repeat;background-color:rgba(255,255,255,.9);background-origin:content-box;padding:10px}
+.w-card-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,12,32,0) 45%,rgba(8,12,32,.5));border-radius:inherit}
+.w-card-body{display:flex;flex-direction:column;gap:6px;padding:18px 20px 20px}
+.w-card-body b{font-size:18px;letter-spacing:-.01em}
+.w-card-body span{font-size:14px;color:var(--m-muted)}
+.w-card-body i{margin-top:4px;font-style:normal;font-size:13px;font-weight:600;color:var(--card-accent,var(--accent))}
+
+/* Related pages, at the bottom of an article */
+.w-related{display:flex;flex-wrap:wrap;gap:8px}
+body.wiki .w-related a{padding:7px 14px;border-radius:999px;font-size:14px;font-weight:600;color:#fff;text-decoration:none;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px rgba(255,255,255,.08);transition:background .2s}
+body.wiki .w-related a:hover{background:rgba(255,255,255,.16)}
+
+/* Search: a glass button in the top bar that opens a glass panel. */
+.w-search-btn{flex-shrink:0;display:grid;place-items:center;width:38px;height:38px;margin-left:6px;padding:0;border:0;border-radius:50%;cursor:pointer;color:#fff;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 0 0 1px rgba(255,255,255,.08);transition:background .2s}
+.w-search-btn:hover{background:rgba(255,255,255,.16)}
+.w-search-btn svg{width:17px;height:17px}
+.w-search{position:fixed;inset:0;z-index:40;display:flex;justify-content:center;align-items:flex-start;padding:12vh 16px 16px;background:rgba(4,6,16,.35);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.w-search.open{opacity:1;pointer-events:auto}
+.w-search-panel{width:640px;max-width:100%;max-height:70vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(-14px) scale(.97);transition:transform .35s cubic-bezier(.2,1.2,.3,1)}
+.w-search.open .w-search-panel{transform:none}
+.w-search input{width:100%;box-sizing:border-box;padding:20px 24px;border:0;outline:none;font:inherit;font-size:19px;color:#fff;background:transparent;border-bottom:1px solid var(--m-line)}
+.w-search input::placeholder{color:var(--m-faint)}
+.w-results{overflow-y:auto;padding:8px}
+body.wiki .w-results a{display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-radius:14px;color:#fff;text-decoration:none}
+body.wiki .w-results a:hover,body.wiki .w-results a.sel{background:rgba(255,255,255,.1)}
+.w-results small{color:var(--m-faint);font-size:12px}
+.w-results span{color:var(--m-muted);font-size:14px}
+.w-results p{margin:14px 16px;color:var(--m-faint)}
+.w-results mark{background:none;color:var(--accent);font-weight:700}
+
+/* Pictures open larger, gliding out of their place on the page. */
+.w-zoom{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:rgba(4,6,16,0);cursor:zoom-out;transition:background .3s ease}
+.w-zoom.open{background:rgba(4,6,16,.72)}
+.w-zoom img{max-width:min(1100px,100%);max-height:86vh;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.6);transition:transform .38s cubic-bezier(.2,.9,.25,1)}
+.w-zoom img[src$=".png"]{background:#fff;padding:10px}
+.w-zoom-caption{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:8px 16px;border-radius:999px;font-size:14px;color:#fff;background:rgba(20,26,56,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:0;transition:opacity .3s ease}
+.w-zoom.open .w-zoom-caption{opacity:1}
+
+@media (max-width:860px){
+.w-article{padding:24px 22px}
+}
+@media (max-width:600px){
+.w-search-btn{width:34px;height:34px;margin-left:auto}
+.w-recipe img{height:130px}
+.w-crumbs{margin-top:22px}
+}
+@media (prefers-reduced-motion:reduce){
+.w-search,.w-search-panel,.w-zoom,.w-zoom img,body.wiki a.w-card,.w-recipe img,.w-gallery img{transition:none}
+}
