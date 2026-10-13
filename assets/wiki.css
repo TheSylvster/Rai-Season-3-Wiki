@@ -57,7 +57,7 @@ overflow-x:hidden;
 body.wiki .glass{
 position:relative;
 /* The dark tint underneath keeps text readable over bright parts of the scene. */
-background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03) 45%,rgba(255,255,255,.02) 70%,rgba(255,255,255,.06)),rgba(8,12,32,.34);
+background:linear-gradient(160deg,rgba(255,240,225,.12),rgba(255,235,220,.03) 45%,rgba(255,255,255,.02) 70%,rgba(255,220,200,.06)),rgba(28,15,34,.36);
 border:0;
 border-radius:var(--m-radius);
 -webkit-backdrop-filter:blur(14px) saturate(185%) brightness(1.06);
@@ -414,3 +414,8 @@ body.wiki .m-log-head h3{font-size:20px}
 .m-log-items li{margin:6px 0}
 /* The menu lens fades out on pages that aren't in the menu, and back in. */
 .m-lens{transition:opacity .25s ease}
+
+/* The wiki's logo: a pixel grass block (InterPhyr Modern has a round orb). */
+.w-block-mark{width:28px;height:28px;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(111,210,90,.4)) drop-shadow(0 2px 3px rgba(0,0,0,.4))}
+/* Warm dusk tint for the glass, to match the sunset landscape. */
+.m-menu-glass{background:linear-gradient(160deg,rgba(255,240,225,.15),rgba(255,235,220,.04) 50%,rgba(255,220,200,.08)),rgba(28,15,34,.48)}

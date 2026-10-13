@@ -30,10 +30,13 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.3",
+version: "V1.0.4",
 
 /* The Update Logs page (newest first). Add an entry with every new version. */
 changelog: [
+{version: "V1.0.4", date: "13.10.2026", items: [
+"A look of its own: a blocky Minecraft-style landscape at dusk behind the glass (stepped hills, a pixel sun, stars and clouds), a pixel grass-block logo, and warmer glass to match."
+]},
 {version: "V1.0.3", date: "13.10.2026", items: [
 "New Update Logs page, opened from the glass button next to the wiki's name. Pressing the button turns it into clear liquid glass for a moment."
 ]},

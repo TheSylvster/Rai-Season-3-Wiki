@@ -21,6 +21,9 @@ var siteRoot=new URL("../",document.currentScript.src).href;
 var imageRoot=siteRoot+"images/";
 
 /* The menu bar: Home and the four branches. */
+/* The wiki's logo: a little pixel grass block. */
+var BLOCK_MARK='<svg class="w-block-mark" viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path fill="#6fd25a" d="M8 1 15 4.5 8 8 1 4.5z"/><path fill="#4fae3e" d="M8 2.5 12 4.5 8 6.5 4 4.5z"/><path fill="#8b5a3c" d="M1 4.5 8 8v7L1 11.5z"/><path fill="#6b4329" d="M15 4.5 8 8v7l7-3.5z"/><path fill="#5bbf4a" d="M1 4.5 8 8v1.6L1 6.1z"/><path fill="#3f9a35" d="M15 4.5 8 8v1.6l7-3.5z"/><path fill="#a06a47" d="M3 8h1v1H3zM5 10h1v1H5zM3 11h1v1H3z"/><path fill="#55361f" d="M10 10h1v1h-1zM12 8h1v1h-1zM12 11h1v1h-1z"/></svg>';
+
 var NAV=WIKI.sections.map(function(s){return {label:s.label,path:s.path};});
 
 var PAGES={};
@@ -78,10 +81,10 @@ return node?node.textContent.replace(/\s+/g," ").trim():"";
 /* ---------- Page frame ---------- */
 
 /*
- * The background: flowing colour ribbons, like a modern wallpaper,
- * with faint survey-map contour lines on top. It is drawn for the
- * screen size (so it is always sharp) and drifts slowly (CSS). The
- * ribbon edges and lines give the glass something to bend.
+ * The background: a blocky Minecraft-style landscape at dusk (stepped
+ * hills, a pixel sun, stars and clouds). It is drawn for the screen
+ * size, so it is always sharp, and drifts slowly (CSS). InterPhyr
+ * Modern has ribbons instead, so the two sites look different.
  */
 
 function backdrop(){
@@ -121,108 +124,116 @@ canvas.style.height=h+"px";
 canvas.cssWidth=w;canvas.cssHeight=h;
 var c=canvas.getContext("2d");
 c.setTransform(dpr,0,0,dpr,0,0);
-
-/* Deep night-blue base. */
-var base=c.createLinearGradient(0,0,w,h);
-base.addColorStop(0,"#0a1030");
-base.addColorStop(0.55,"#080b1f");
-base.addColorStop(1,"#120a26");
-c.fillStyle=base;
-c.fillRect(0,0,w,h);
-
-/* The ribbons: wide bands with wavy edges, each with its own colours. */
-var ribbons=[
-{y:0.18,thick:0.20,amp:0.10,freq:1.1,phase:0.4,tilt:0.18,colors:["#2f5bff","#7b4dff","#c04dff"],alpha:0.62},
-{y:0.46,thick:0.16,amp:0.08,freq:1.4,phase:2.1,tilt:-0.12,colors:["#16c7b0","#2f7dff","#5b4dff"],alpha:0.5},
-{y:0.70,thick:0.22,amp:0.11,freq:0.9,phase:4.0,tilt:0.1,colors:["#e8453a","#f07a3d","#a83dff"],alpha:0.5},
-{y:0.92,thick:0.14,amp:0.06,freq:1.6,phase:1.2,tilt:-0.08,colors:["#7b4dff","#2f5bff","#16c7b0"],alpha:0.42}
-];
-c.save();
-c.filter="blur(1.5px)";
-ribbons.forEach(function(r){
-function edge(x,offset){
-var u=x/w;
-return h*(r.y+offset+r.tilt*(u-0.5)+r.amp*Math.sin(u*Math.PI*2*r.freq+r.phase)+r.amp*0.35*Math.sin(u*Math.PI*5.3*r.freq+r.phase*1.7));
-}
-var steps=60,i,x;
-c.beginPath();
-for(i=0;i<=steps;i++){x=w*i/steps;if(i===0)c.moveTo(x,edge(x,-r.thick/2));else c.lineTo(x,edge(x,-r.thick/2));}
-for(i=steps;i>=0;i--){x=w*i/steps;c.lineTo(x,edge(x,r.thick/2)+h*0.04*Math.sin(i/steps*Math.PI*3+r.phase));}
-c.closePath();
-var g=c.createLinearGradient(0,0,w,0);
-g.addColorStop(0,r.colors[0]);
-g.addColorStop(0.5,r.colors[1]);
-g.addColorStop(1,r.colors[2]);
-c.globalAlpha=r.alpha;
-c.fillStyle=g;
-c.fill();
-/* A silky shine along the top edge of each ribbon. */
-c.globalAlpha=r.alpha*0.55;
-c.lineWidth=2;
-c.strokeStyle="rgba(255,255,255,.55)";
-c.beginPath();
-for(i=0;i<=steps;i++){x=w*i/steps;if(i===0)c.moveTo(x,edge(x,-r.thick/2));else c.lineTo(x,edge(x,-r.thick/2));}
-c.stroke();
-});
-c.restore();
-c.globalAlpha=1;
-
-/* Darken between the ribbons a little, so text stays easy to read. */
-var shade=c.createLinearGradient(0,0,0,h);
-shade.addColorStop(0,"rgba(6,9,24,.42)");
-shade.addColorStop(0.5,"rgba(6,9,24,.25)");
-shade.addColorStop(1,"rgba(6,9,24,.48)");
-c.fillStyle=shade;
-c.fillRect(0,0,w,h);
-
-/* Contour lines, like a survey map, from a smooth random height field. */
+c.imageSmoothingEnabled=false;
 var rand=seeded(1996);
-var cell=180,gx=Math.ceil(w/cell)+2,gy=Math.ceil(h/cell)+2,grid=[],gi;
-for(gi=0;gi<gx*gy;gi++)grid.push(rand());
+
+/* Dusk sky: deep night blue at the top, warm glow at the horizon. */
+var horizon=h*0.62;
+var sky=c.createLinearGradient(0,0,0,horizon);
+sky.addColorStop(0,"#040716");
+sky.addColorStop(0.45,"#121236");
+sky.addColorStop(0.75,"#3c1c4a");
+sky.addColorStop(1,"#c65a3a");
+c.fillStyle=sky;
+c.fillRect(0,0,w,h);
+
+/* Pixel stars, brighter and denser higher up. */
+var px=Math.max(2,Math.round(Math.min(w,h)/400));
+for(var s=0;s<Math.round(w*h/9000);s++){
+var sx=Math.floor(rand()*w),sy=Math.floor(Math.pow(rand(),1.6)*horizon*0.85);
+var big=rand()<0.12;
+c.fillStyle="rgba(255,255,255,"+(0.35+rand()*0.55)*(1-sy/horizon)+")";
+c.fillRect(Math.floor(sx/px)*px,Math.floor(sy/px)*px,big?px*2:px,big?px*2:px);
+}
+
+/* A big blocky sun setting on the horizon, drawn in squares. */
+var block=Math.max(8,Math.round(Math.min(w,h)/70));
+var sunX=w*0.7,sunY=h*0.4,sunR=block*6;
+for(var by=-sunR;by<=sunR;by+=block){
+for(var bx=-sunR;bx<=sunR;bx+=block){
+var d=Math.sqrt((bx+block/2)*(bx+block/2)+(by+block/2)*(by+block/2));
+if(d>sunR)continue;
+var t=d/sunR;
+c.fillStyle=t<0.55?"#ffcf7a":t<0.8?"#ffae5c":"#f2794e";
+c.fillRect(Math.round(sunX+bx),Math.round(sunY+by),block,block);
+}
+}
+/* Its glow on the sky. */
+var glow=c.createRadialGradient(sunX,sunY,sunR*0.5,sunX,sunY,sunR*4);
+glow.addColorStop(0,"rgba(255,150,90,.35)");
+glow.addColorStop(1,"rgba(255,150,90,0)");
+c.fillStyle=glow;
+c.fillRect(0,0,w,h);
+
+/* Blocky clouds drifting across the sky. */
+for(var k=0;k<7;k++){
+var cx=rand()*w,cy=horizon*(0.15+rand()*0.45),cw=Math.round(4+rand()*7),ch=Math.round(1+rand()*2);
+c.fillStyle="rgba(255,190,200,"+(0.06+rand()*0.08)+")";
+for(var r=0;r<ch;r++){
+var inset=r===0?Math.round(cw*0.25):0;
+c.fillRect(Math.round(cx+inset*block),Math.round(cy+r*block),(cw-inset*2)*block,block);
+}
+}
+
+/*
+ * Stepped hills in four layers, far to near: each column of blocks
+ * gets a height from a smooth random curve, so the ridges come out
+ * in steps like a Minecraft landscape.
+ */
 function smooth(t){return t*t*(3-2*t);}
-function noise(x,y){
-var fx=x/cell,fy=y/cell,ix=Math.floor(fx),iy=Math.floor(fy),tx=smooth(fx-ix),ty=smooth(fy-iy);
-/* Wraps around, so any position has a value. */
-function at(i,j){return grid[((j%gy)+gy)%gy*gx+((i%gx)+gx)%gx];}
-var a=at(ix,iy),b2=at(ix+1,iy),c2=at(ix,iy+1),d=at(ix+1,iy+1);
-return (a+(b2-a)*tx)+((c2+(d-c2)*tx)-(a+(b2-a)*tx))*ty;
-}
-function height(x,y){return noise(x,y)*0.7+noise(x*2.3+400,y*2.3+400)*0.3;}
-var step=6,cols=Math.ceil(w/step)+1,rows=Math.ceil(h/step)+1,field=new Float32Array(cols*rows),ix2,iy2;
-for(iy2=0;iy2<rows;iy2++)for(ix2=0;ix2<cols;ix2++)field[iy2*cols+ix2]=height(ix2*step,iy2*step);
-c.lineWidth=1;
-for(var level=0.1;level<0.95;level+=0.05){
-var major=Math.abs(level*10-Math.round(level*10))<0.01;
-c.strokeStyle=major?"rgba(255,255,255,.11)":"rgba(255,255,255,.055)";
-c.beginPath();
-for(iy2=0;iy2<rows-1;iy2++){
-for(ix2=0;ix2<cols-1;ix2++){
-/* Marching squares: where the line crosses each little square. */
-var v0=field[iy2*cols+ix2],v1=field[iy2*cols+ix2+1],v2=field[(iy2+1)*cols+ix2+1],v3=field[(iy2+1)*cols+ix2];
+function curve(seedOffset,scale){
 var pts=[];
-var x0=ix2*step,y0=iy2*step;
-if((v0<level)!==(v1<level))pts.push([x0+step*(level-v0)/(v1-v0),y0]);
-if((v1<level)!==(v2<level))pts.push([x0+step,y0+step*(level-v1)/(v2-v1)]);
-if((v3<level)!==(v2<level))pts.push([x0+step*(level-v3)/(v2-v3),y0+step]);
-if((v0<level)!==(v3<level))pts.push([x0,y0+step*(level-v0)/(v3-v0)]);
-if(pts.length>=2){c.moveTo(pts[0][0],pts[0][1]);c.lineTo(pts[1][0],pts[1][1]);}
-if(pts.length===4){c.moveTo(pts[2][0],pts[2][1]);c.lineTo(pts[3][0],pts[3][1]);}
+for(var i=0;i<Math.ceil(w/scale)+3;i++)pts.push(rand());
+return function(x){
+var f=x/scale,i=Math.floor(f),t=smooth(f-i);
+return pts[i]+(pts[i+1]-pts[i])*t;
+};
+}
+var layers=[
+{size:block,base:0.62,amp:0.14,scale:w*0.22,color:"#3a2450",top:"#4b3062"},
+{size:block*1.25,base:0.7,amp:0.13,scale:w*0.18,color:"#221636",top:"#2e1f45"},
+{size:block*1.5,base:0.79,amp:0.11,scale:w*0.15,color:"#120d20",top:"#1d3d2a"},
+{size:block*2,base:0.89,amp:0.08,scale:w*0.12,color:"#07060d",top:"#17371f"}
+];
+layers.forEach(function(layer,li){
+var height=curve(li,layer.scale);
+var size=Math.round(layer.size);
+for(var x=0;x<w+size;x+=size){
+var top=Math.round((h*(layer.base-layer.amp*height(x)))/size)*size;
+c.fillStyle=layer.color;
+c.fillRect(x,top,size,h-top);
+/* The nearer layers get a grass-coloured top block. */
+c.fillStyle=layer.top;
+c.fillRect(x,top,size,Math.max(3,Math.round(size*0.35)));
+/* A few blocky trees on the nearest two layers. */
+if(li>=2&&rand()<0.07){
+/* A short trunk under a wide, blocky crown, like an oak. */
+var trunk=Math.round(size*0.5),treeH=Math.round(size*(1+rand()));
+c.fillStyle=layer.color;
+c.fillRect(x+size/2-trunk/2,top-treeH,trunk,treeH);
+c.fillRect(x-size,top-treeH-size*1.6,size*3,size*1.6);
+c.fillRect(x-size*0.5,top-treeH-size*2.4,size*2,size*0.8);
 }
 }
-c.stroke();
-}
+/* Haze between the layers, so the far hills fade into the dusk. */
+var haze=c.createLinearGradient(0,h*(layer.base-layer.amp),0,h);
+haze.addColorStop(0,"rgba(120,60,110,"+(0.18-li*0.04)+")");
+haze.addColorStop(1,"rgba(120,60,110,0)");
+c.fillStyle=haze;
+c.fillRect(0,0,w,h);
+});
 
 /* A soft vignette towards the edges. */
 var vignette=c.createRadialGradient(w/2,h*0.45,Math.min(w,h)*0.3,w/2,h/2,Math.max(w,h)*0.75);
-vignette.addColorStop(0,"rgba(5,7,20,0)");
-vignette.addColorStop(1,"rgba(5,7,20,.6)");
+vignette.addColorStop(0,"rgba(5,6,18,0)");
+vignette.addColorStop(1,"rgba(5,6,18,.55)");
 c.fillStyle=vignette;
 c.fillRect(0,0,w,h);
 }
 
 function topbar(page){
 var bar=el("header","m-topbar glass");
-bar.innerHTML='<a class="m-brand" href="'+urlOf("")+'"><span class="m-brand-mark" aria-hidden="true"></span><span>'+escapeHtml(WIKI.name)+'</span></a>';
+bar.innerHTML='<a class="m-brand" href="'+urlOf("")+'">'+BLOCK_MARK+'<span>'+escapeHtml(WIKI.name)+'</span></a>';
 bar.appendChild(makeGlassButton(urlOf("updates"),"Update Logs",ICON_LOG));
 var nav=el("nav","m-nav");
 nav.setAttribute("aria-label","Main");
