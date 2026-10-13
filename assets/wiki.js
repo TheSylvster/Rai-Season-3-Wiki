@@ -434,7 +434,7 @@ function footer(){
 var f=el("footer","m-footer glass");
 f.innerHTML=
 '<span>'+escapeHtml(WIKI.name)+' &middot; Crafting information from JR\'s Crafting Guide for Season 3</span>'+
-'<span>Wiki '+escapeHtml(WIKI.version)+' &middot; Built by Sylvia Valentina &middot; Hosted by ZapadTelecom&copy;</span>';
+'<span>Wiki '+escapeHtml(WIKI.version)+' &middot; Built by Sylvia Valentina &middot; Built with Visual Studio Code</span>';
 return f;
 }
 
