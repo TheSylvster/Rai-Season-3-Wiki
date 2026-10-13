@@ -82,27 +82,84 @@ return node?node.textContent.replace(/\s+/g," ").trim():"";
 
 /*
  * The background: a blocky Minecraft-style landscape at dusk (stepped
- * hills, a pixel sun, stars and clouds). It is drawn for the screen
- * size, so it is always sharp, and drifts slowly (CSS). InterPhyr
- * Modern has ribbons instead, so the two sites look different.
+ * hills, a pixel sun, stars and clouds), drawn for the screen size so
+ * it is always sharp. InterPhyr Modern has ribbons instead, so the two
+ * sites look different.
+ *
+ * Parallax: the scene is painted in three layers (sky, far hills, near
+ * hills) that move at different speeds as the page scrolls, and shift
+ * a little with the mouse, so it has depth. The movement is smoothed,
+ * and switched off for visitors who prefer reduced motion.
  */
+
+/* How far each layer moves (pixels) over the whole page, and with the mouse. */
+var PARALLAX=[
+{name:"sky",scroll:24,mouse:4},
+{name:"far",scroll:70,mouse:10},
+{name:"near",scroll:150,mouse:22}
+];
+var EXTRA=170;
+/* The scene is this much bigger than the screen, so its edges never show on wide or tall screens. */
+var SCENE=1.3;
 
 function backdrop(){
 var b=el("div","m-backdrop");
 b.setAttribute("aria-hidden","true");
-var canvas=el("canvas","m-backdrop-art");
-b.appendChild(canvas);
-function draw(){paintBackdrop(canvas);}
+var scene=el("div","m-backdrop-art");
+b.appendChild(scene);
+var canvases=PARALLAX.map(function(layer){
+var canvas=el("canvas","w-layer w-layer-"+layer.name);
+scene.appendChild(canvas);
+return canvas;
+});
+function draw(){paintBackdrop(canvases);}
 draw();
 var timer=0;
 window.addEventListener("resize",function(){
 clearTimeout(timer);
 timer=setTimeout(function(){
 /* Only redraw when the screen got bigger, or changed a lot. */
-if(window.innerWidth*1.15>canvas.cssWidth||window.innerHeight*1.15>canvas.cssHeight||window.innerWidth<canvas.cssWidth*0.6)draw();
+var c=canvases[0];
+if(window.innerWidth*SCENE>c.cssWidth+2||window.innerHeight*SCENE>c.cssHeight+2||window.innerWidth<c.cssWidth*0.6)draw();
 },250);
 });
+startParallax(canvases);
 return b;
+}
+
+function startParallax(canvases){
+if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+var target={scroll:0,x:0,y:0},now={scroll:0,x:0,y:0},running=false;
+function measure(){
+var max=document.documentElement.scrollHeight-window.innerHeight;
+target.scroll=max>0?Math.min(1,window.scrollY/max):0;
+wake();
+}
+function wake(){if(!running){running=true;requestAnimationFrame(step);}}
+function step(){
+/* Ease towards the target, so the layers glide instead of jumping. */
+var done=true;
+["scroll","x","y"].forEach(function(k){
+now[k]+=(target[k]-now[k])*0.12;
+if(Math.abs(target[k]-now[k])>0.0005)done=false;else now[k]=target[k];
+});
+canvases.forEach(function(canvas,i){
+var p=PARALLAX[i];
+canvas.style.transform="translate3d("+(-now.x*p.mouse).toFixed(2)+"px,"+(-now.scroll*p.scroll-now.y*p.mouse*0.6).toFixed(2)+"px,0)";
+});
+if(done)running=false;else requestAnimationFrame(step);
+}
+window.addEventListener("scroll",measure,{passive:true});
+window.addEventListener("resize",measure);
+/* The mouse only on devices that have one (not on touch screens). */
+if(window.matchMedia&&window.matchMedia("(pointer: fine)").matches){
+window.addEventListener("pointermove",function(event){
+target.x=event.clientX/window.innerWidth*2-1;
+target.y=event.clientY/window.innerHeight*2-1;
+wake();
+},{passive:true});
+}
+measure();
 }
 
 /* A repeatable random number generator, so the scene looks the same every visit. */
@@ -113,75 +170,84 @@ return seed/4294967296;
 };
 }
 
-function paintBackdrop(canvas){
-/* A little larger than the screen, so the slow drift never shows an edge. */
-var w=Math.round(window.innerWidth*1.15),h=Math.round(window.innerHeight*1.15);
-var dpr=Math.min(window.devicePixelRatio||1,2);
+function paintBackdrop(canvases){
+/* A little larger than the screen, so the drift and parallax never show an edge. */
+var w=Math.round(window.innerWidth*SCENE),h=Math.round(window.innerHeight*SCENE);
+var dpr=Math.min(window.devicePixelRatio||1,1.5);
+var ctx=canvases.map(function(canvas){
+var ch=h+EXTRA;
 canvas.width=Math.round(w*dpr);
-canvas.height=Math.round(h*dpr);
+canvas.height=Math.round(ch*dpr);
 canvas.style.width=w+"px";
-canvas.style.height=h+"px";
+canvas.style.height=ch+"px";
 canvas.cssWidth=w;canvas.cssHeight=h;
 var c=canvas.getContext("2d");
 c.setTransform(dpr,0,0,dpr,0,0);
 c.imageSmoothingEnabled=false;
+c.clearRect(0,0,w,ch);
+return c;
+});
+var sky=ctx[0],full=h+EXTRA;
 var rand=seeded(1996);
 
 /* Dusk sky: deep night blue at the top, warm glow at the horizon. */
 var horizon=h*0.62;
-var sky=c.createLinearGradient(0,0,0,horizon);
-sky.addColorStop(0,"#040716");
-sky.addColorStop(0.45,"#121236");
-sky.addColorStop(0.75,"#3c1c4a");
-sky.addColorStop(1,"#c65a3a");
-c.fillStyle=sky;
-c.fillRect(0,0,w,h);
+var gradient=sky.createLinearGradient(0,0,0,horizon);
+gradient.addColorStop(0,"#040716");
+gradient.addColorStop(0.45,"#121236");
+gradient.addColorStop(0.75,"#3c1c4a");
+gradient.addColorStop(1,"#c65a3a");
+sky.fillStyle=gradient;
+sky.fillRect(0,0,w,full);
 
 /* Pixel stars, brighter and denser higher up. */
 var px=Math.max(2,Math.round(Math.min(w,h)/400));
 for(var s=0;s<Math.round(w*h/9000);s++){
 var sx=Math.floor(rand()*w),sy=Math.floor(Math.pow(rand(),1.6)*horizon*0.85);
 var big=rand()<0.12;
-c.fillStyle="rgba(255,255,255,"+(0.35+rand()*0.55)*(1-sy/horizon)+")";
-c.fillRect(Math.floor(sx/px)*px,Math.floor(sy/px)*px,big?px*2:px,big?px*2:px);
+sky.fillStyle="rgba(255,255,255,"+(0.35+rand()*0.55)*(1-sy/horizon)+")";
+sky.fillRect(Math.floor(sx/px)*px,Math.floor(sy/px)*px,big?px*2:px,big?px*2:px);
 }
 
-/* A big blocky sun setting on the horizon, drawn in squares. */
+/* A big blocky sun, drawn in squares, with its glow on the sky. */
 var block=Math.max(8,Math.round(Math.min(w,h)/70));
 var sunX=w*0.7,sunY=h*0.4,sunR=block*6;
+/* Each colour ring is filled as one shape, so no lines show between the blocks. */
+[["#f2794e",1],["#ffae5c",0.8],["#ffcf7a",0.55]].forEach(function(ring){
+sky.beginPath();
 for(var by=-sunR;by<=sunR;by+=block){
 for(var bx=-sunR;bx<=sunR;bx+=block){
 var d=Math.sqrt((bx+block/2)*(bx+block/2)+(by+block/2)*(by+block/2));
-if(d>sunR)continue;
-var t=d/sunR;
-c.fillStyle=t<0.55?"#ffcf7a":t<0.8?"#ffae5c":"#f2794e";
-c.fillRect(Math.round(sunX+bx),Math.round(sunY+by),block,block);
+if(d<=sunR*ring[1])sky.rect(Math.round(sunX+bx),Math.round(sunY+by),block,block);
 }
 }
-/* Its glow on the sky. */
-var glow=c.createRadialGradient(sunX,sunY,sunR*0.5,sunX,sunY,sunR*4);
+sky.fillStyle=ring[0];
+sky.fill();
+});
+var glow=sky.createRadialGradient(sunX,sunY,sunR*0.5,sunX,sunY,sunR*4);
 glow.addColorStop(0,"rgba(255,150,90,.35)");
 glow.addColorStop(1,"rgba(255,150,90,0)");
-c.fillStyle=glow;
-c.fillRect(0,0,w,h);
+sky.fillStyle=glow;
+sky.fillRect(0,0,w,full);
 
-/* Blocky clouds drifting across the sky. */
+/* Blocky clouds. */
 for(var k=0;k<7;k++){
-var cx=rand()*w,cy=horizon*(0.15+rand()*0.45),cw=Math.round(4+rand()*7),ch=Math.round(1+rand()*2);
-c.fillStyle="rgba(255,190,200,"+(0.06+rand()*0.08)+")";
-for(var r=0;r<ch;r++){
+var cx=rand()*w,cy=horizon*(0.15+rand()*0.45),cw=Math.round(4+rand()*7),chh=Math.round(1+rand()*2);
+sky.fillStyle="rgba(255,190,200,"+(0.06+rand()*0.08)+")";
+for(var r=0;r<chh;r++){
 var inset=r===0?Math.round(cw*0.25):0;
-c.fillRect(Math.round(cx+inset*block),Math.round(cy+r*block),(cw-inset*2)*block,block);
+sky.fillRect(Math.round(cx+inset*block),Math.round(cy+r*block),(cw-inset*2)*block,block);
 }
 }
 
 /*
- * Stepped hills in four layers, far to near: each column of blocks
- * gets a height from a smooth random curve, so the ridges come out
- * in steps like a Minecraft landscape.
+ * Stepped hills in four bands, far to near: each column of blocks gets
+ * a height from a smooth random curve, so the ridges come out in steps
+ * like a Minecraft landscape. The two far bands go on the "far" layer,
+ * the two near ones on the "near" layer, so they move at different speeds.
  */
 function smooth(t){return t*t*(3-2*t);}
-function curve(seedOffset,scale){
+function curve(scale){
 var pts=[];
 for(var i=0;i<Math.ceil(w/scale)+3;i++)pts.push(rand());
 return function(x){
@@ -189,46 +255,55 @@ var f=x/scale,i=Math.floor(f),t=smooth(f-i);
 return pts[i]+(pts[i+1]-pts[i])*t;
 };
 }
-var layers=[
-{size:block,base:0.62,amp:0.14,scale:w*0.22,color:"#3a2450",top:"#4b3062"},
-{size:block*1.25,base:0.7,amp:0.13,scale:w*0.18,color:"#221636",top:"#2e1f45"},
-{size:block*1.5,base:0.79,amp:0.11,scale:w*0.15,color:"#120d20",top:"#1d3d2a"},
-{size:block*2,base:0.89,amp:0.08,scale:w*0.12,color:"#07060d",top:"#17371f"}
+var bands=[
+{layer:1,size:block,base:0.62,amp:0.14,scale:w*0.22,color:"#3a2450",top:"#4b3062"},
+{layer:1,size:block*1.25,base:0.7,amp:0.13,scale:w*0.18,color:"#221636",top:"#2e1f45"},
+{layer:2,size:block*1.5,base:0.79,amp:0.11,scale:w*0.15,color:"#120d20",top:"#1d3d2a"},
+{layer:2,size:block*2,base:0.89,amp:0.08,scale:w*0.12,color:"#07060d",top:"#17371f"}
 ];
-layers.forEach(function(layer,li){
-var height=curve(li,layer.scale);
-var size=Math.round(layer.size);
+bands.forEach(function(band,bi){
+var c=ctx[band.layer];
+var height=curve(band.scale);
+var size=Math.round(band.size);
+/* The whole band (and its grass) is filled as one shape each, so no lines show between the blocks. */
+var ground=new Path2D(),grass=new Path2D(),trees=new Path2D();
 for(var x=0;x<w+size;x+=size){
-var top=Math.round((h*(layer.base-layer.amp*height(x)))/size)*size;
-c.fillStyle=layer.color;
-c.fillRect(x,top,size,h-top);
-/* The nearer layers get a grass-coloured top block. */
-c.fillStyle=layer.top;
-c.fillRect(x,top,size,Math.max(3,Math.round(size*0.35)));
-/* A few blocky trees on the nearest two layers. */
-if(li>=2&&rand()<0.07){
+var top=Math.round((h*(band.base-band.amp*height(x)))/size)*size;
+ground.rect(x,top,size,full-top);
+grass.rect(x,top,size,Math.max(3,Math.round(size*0.35)));
+/* A few blocky trees on the near bands. */
+if(band.layer===2&&rand()<0.07){
 /* A short trunk under a wide, blocky crown, like an oak. */
 var trunk=Math.round(size*0.5),treeH=Math.round(size*(1+rand()));
-c.fillStyle=layer.color;
-c.fillRect(x+size/2-trunk/2,top-treeH,trunk,treeH);
-c.fillRect(x-size,top-treeH-size*1.6,size*3,size*1.6);
-c.fillRect(x-size*0.5,top-treeH-size*2.4,size*2,size*0.8);
+trees.rect(Math.round(x+size/2-trunk/2),top-treeH,trunk,treeH+1);
+trees.rect(x-size,Math.round(top-treeH-size*1.6),size*3,Math.round(size*1.6)+1);
+trees.rect(Math.round(x-size*0.5),Math.round(top-treeH-size*2.4),size*2,Math.round(size*0.8)+1);
 }
 }
-/* Haze between the layers, so the far hills fade into the dusk. */
-var haze=c.createLinearGradient(0,h*(layer.base-layer.amp),0,h);
-haze.addColorStop(0,"rgba(120,60,110,"+(0.18-li*0.04)+")");
+c.fillStyle=band.color;
+c.fill(ground);
+c.fill(trees);
+c.fillStyle=band.top;
+c.fill(grass);
+/* Haze over the far bands, so they fade into the dusk. */
+if(band.layer===1){
+var haze=c.createLinearGradient(0,h*(band.base-band.amp),0,full);
+haze.addColorStop(0,"rgba(120,60,110,"+(0.16-bi*0.05)+")");
 haze.addColorStop(1,"rgba(120,60,110,0)");
+c.globalCompositeOperation="source-atop";
 c.fillStyle=haze;
-c.fillRect(0,0,w,h);
+c.fillRect(0,0,w,full);
+c.globalCompositeOperation="source-over";
+}
 });
 
-/* A soft vignette towards the edges. */
-var vignette=c.createRadialGradient(w/2,h*0.45,Math.min(w,h)*0.3,w/2,h/2,Math.max(w,h)*0.75);
+/* A soft vignette towards the edges, on the nearest layer. */
+var near=ctx[2];
+var vignette=near.createRadialGradient(w/2,h*0.45,Math.min(w,h)*0.3,w/2,h/2,Math.max(w,h)*0.75);
 vignette.addColorStop(0,"rgba(5,6,18,0)");
 vignette.addColorStop(1,"rgba(5,6,18,.55)");
-c.fillStyle=vignette;
-c.fillRect(0,0,w,h);
+near.fillStyle=vignette;
+near.fillRect(0,0,w,full);
 }
 
 function topbar(page){

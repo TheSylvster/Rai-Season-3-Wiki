@@ -30,10 +30,14 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.4",
+version: "V1.0.5",
 
 /* The Update Logs page (newest first). Add an entry with every new version. */
 changelog: [
+{version: "V1.0.5", date: "13.10.2026", items: [
+"Parallax: the dusk landscape is now three layers (sky, far hills, near hills) that move at different speeds as you scroll, and shift a little with the mouse.",
+"The landscape is drawn bigger than the screen, so it fills wide and tall screens, and the thin lines between its blocks are gone."
+]},
 {version: "V1.0.4", date: "13.10.2026", items: [
 "A look of its own: a blocky Minecraft-style landscape at dusk behind the glass (stepped hills, a pixel sun, stars and clouds), a pixel grass-block logo, and warmer glass to match."
 ]},

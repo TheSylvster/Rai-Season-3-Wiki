@@ -40,7 +40,7 @@ overflow-x:hidden;
 
 .m-backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 /* The painted scene (see paintBackdrop in modern.js), a little larger than the screen, drifting slowly. */
-.m-backdrop-art{position:absolute;left:-7.5vw;top:-7.5vh;animation:m-drift 80s ease-in-out infinite alternate;will-change:transform}
+.m-backdrop-art{position:absolute;left:-15vw;top:-15vh;width:130vw;height:130vh;animation:m-drift 80s ease-in-out infinite alternate;will-change:transform}
 @keyframes m-drift{
 0%{transform:translate(0,0) scale(1)}
 50%{transform:translate(3vw,2vh) scale(1.03)}
@@ -419,3 +419,6 @@ body.wiki .m-log-head h3{font-size:20px}
 .w-block-mark{width:28px;height:28px;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(111,210,90,.4)) drop-shadow(0 2px 3px rgba(0,0,0,.4))}
 /* Warm dusk tint for the glass, to match the sunset landscape. */
 .m-menu-glass{background:linear-gradient(160deg,rgba(255,240,225,.15),rgba(255,235,220,.04) 50%,rgba(255,220,200,.08)),rgba(28,15,34,.48)}
+
+/* The landscape's three parallax layers (sky, far hills, near hills), moved by the script. */
+.w-layer{position:absolute;left:0;top:0;will-change:transform}
