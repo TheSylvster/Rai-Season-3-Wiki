@@ -26,15 +26,16 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.0",
+version: "V1.0.1",
 
-/* The menu bar: the home page and the four branches, each with its own accent colour. */
+/* The menu bar: the home page, the four branches and Tips, each with its own accent colour. */
 sections: [
 {path: "", label: "Home"},
 {path: "agriculture", label: "Agriculture", accent: "#3ddc84"},
 {path: "industrial", label: "Industrial", accent: "#ff8a3d"},
 {path: "geology", label: "Geology", accent: "#ffc94d"},
-{path: "alchemy", label: "Alchemy", accent: "#b46bff"}
+{path: "alchemy", label: "Alchemy", accent: "#b46bff"},
+{path: "tips", label: "Tips", accent: "#22d3b6"}
 ],
 
 pages: [
@@ -421,6 +422,59 @@ blocks: [
 {img: "alchemy-throwables-4.jpg", caption: "Choke Gas"},
 {img: "alchemy-throwables-5.jpg", caption: "Shock Gas"}
 ]}
+]},
+
+/* ---------------- Tips & Tricks ---------------- */
+
+{path: "tips", title: "Tips & Tricks", section: "tips", parent: "",
+image: "agriculture-2.jpg",
+summary: "Shortcuts, good habits and things worth knowing before you start.",
+blocks: [
+{type: "text", html: "A collection of useful tips for Season 3, put together from the rest of the wiki. Follow the links for the full recipes."},
+
+{type: "heading", text: "Getting started"},
+{type: "list", items: [
+"Build a {{industrial/shredder|Shredder}} early. You need it for alloys, blackpowder, both rare ores and some alchemy plants.",
+"Get a blast furnace and a stonecutter too. Steel, Bronze and the rare ingots all go through the blast furnace, and Steel and Cherry Ingots are finished in the stonecutter.",
+"Iron is in demand everywhere: the {{agriculture/knife|Kitchen Knife}}, the {{agriculture/juicer|Juicer}}, the {{alchemy/machines|alchemy machines}}, Steel, and the Iron Powder for {{geology/rare-ores/multi-ore-compound|Multi-Ore}}. Keep a good stock.",
+"Save your diamonds. You need one for the {{alchemy/machines|Centrifuge}}, and one for every {{geology/rare-ores/cherry-ore|Cherry Ingot}} (as Diamond Powder)."
+]},
+
+{type: "heading", text: "Mining"},
+{type: "list", items: [
+"The {{geology/basic-ores|basic ores}} are found at Y-level 5 and above. Below Y-level -5, look for the deepslate variants of Lead and Tin.",
+"{{geology/rare-ores/multi-ore-compound|Multi-Ore}} is only in deepslate and needs a Netherite Pickaxe. {{geology/rare-ores/cherry-ore|Cherry Ore}} is only in regular stone and needs a Multi-Ore Pickaxe.",
+"So the order is: Netherite Pickaxe, then Multi-Ore, then a Multi-Ore Pickaxe, then Cherry Ore.",
+"Mine Aluminum if you want to do alchemy: every alchemy machine is made with it."
+]},
+
+{type: "heading", text: "Firearms and ammunition"},
+{type: "table", head: ["One Lead Ingot makes", "Enough for"], rows: [
+["1 Blunderbuss Slug Cartridge", "1 Blunderbuss shot"],
+["3 Musket Balls", "3 Musket shots"],
+["6 Small Musket Balls (3 Musket Balls, each split in two)", "6 Flintlock shots"]
+]},
+{type: "list", items: [
+"If Lead is scarce, the {{industrial/muskets/flintlock|Flintlock}} gets the most shots out of it, and it reloads twice as fast (for half the damage).",
+"The {{industrial/muskets/blunderbuss|Blunderbuss}} hits hardest but reloads slowest, and every cartridge uses a whole Lead Ingot.",
+"Every cartridge also needs one Blackpowder and one Paper, so keep Sugar Cane farms going."
+]},
+
+{type: "heading", text: "Cooking"},
+{type: "list", items: [
+"One loaf of Bread cut with the {{agriculture/knife|Kitchen Knife}} gives 4 Bread Slices: enough for 4 sandwiches.",
+"{{agriculture/juicer|Fruit Juice}} is the best value: one Apple, Melon and Berry Juice make 3 Fruit Juices, and each one gives all three effects.",
+"Onion goes into six of the eleven {{agriculture/food|dishes}}. Plant plenty."
+]},
+
+{type: "heading", text: "Alchemy"},
+{type: "list", items: [
+"Build the Centrifuge and the Distillation Setup first: the Gas Extractor and the Chemistry Bench are made from them.",
+"The basic {{alchemy/crops|alchemy crops}} rarely drop seeds, so plan on buying more at the Market.",
+"Anetherbloom seeds are rare and grow very slowly. Use them for the products that need them."
+]},
+
+{type: "callout", html: "Know a good tip that isn't here? It can be added at any time."}
 ]}
 
 ]
