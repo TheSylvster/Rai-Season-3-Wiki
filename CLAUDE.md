@@ -14,7 +14,7 @@ This file holds the owner's standing instructions. Follow them on every change. 
 ## Content
 
 - **Neutral wiki tone, no propaganda.** This is not InterPhyr. Write plainly and factually, like a normal wiki.
-- Maker's marks are fine, like a signature on a painting. The footer says "Built by TheSylvster · Hosted by ZapadTelecom©". Keep it.
+- Maker's marks are fine, like a signature on a painting. The footer says "Built by Sylvia Valentina · Hosted by ZapadTelecom©". Keep it.
 - The crafting information comes from **JR's Crafting Guide for Season 3** (https://sites.google.com/view/whole-website-thing/home). Keep the credit in the footer.
 - The owner asks Claude to make changes. All page content lives in **`assets/content.js`**, and the comment at its top explains the block types and the `{{path|label}}` link syntax.
 - **To add a page:** add its entry to `content.js` (path, title, section, parent, summary, blocks), then run `perl tools/make-pages.pl .` to create its folder and `index.html`. Pages without a folder still work through `404.html`, but they should get one.
