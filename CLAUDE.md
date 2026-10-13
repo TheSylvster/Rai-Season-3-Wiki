@@ -7,7 +7,7 @@ This file holds the owner's standing instructions. Follow them on every change. 
 ## Every push
 
 1. **Pull first** (`git pull --ff-only`). The site is edited from more than one PC.
-2. **Bump the version** (`version` near the top of `assets/content.js`, shown in the footer) in the same commit: V1.0.0, then V1.0.1, V1.0.2, and so on. Small tweaks and fixes to something just released don't need a bump.
+2. **Bump the version** (`version` near the top of `assets/content.js`, shown in the footer) and **add an entry to `changelog`** (shown on the Update Logs page, newest first) in the same commit: V1.0.0, then V1.0.1, V1.0.2, and so on. Small tweaks and fixes to something just released don't need a bump.
 3. **Test in a real browser** (headless Chrome against a local server works) on desktop and phone widths: no script errors, no broken images, no sideways scrolling.
 4. **Verify the deploy**: after pushing, poll the live site (add `?cb=<random>` to get past the cache) until the change is live, then tell the owner.
 
@@ -26,6 +26,7 @@ This file holds the owner's standing instructions. Follow them on every change. 
 - **Motion rule: everything must feel smooth, natural and modern. Nothing may jump or "teleport".** Page changes animate (`navigate()`), and links to a place on the same page glide there (`glideTo()`). Anything that opens, closes or moves animates (search, picture zoom, phone menu). Visitors who turn on "reduce motion" get instant changes instead.
 - **Slider rule: every slider or selection highlight must be a CLEAR liquid-glass lens built with `makeLens()`.** Clear means no frosted or white fill. It has a bright rim, a faint rainbow fringe, a soft shadow, and refracted content underneath. It always slides like liquid and never snaps. This covers the menu bar and the phone menu, and any tabs or toggles added later.
 - On phones, the menu is the round glass button that melts open into a panel (`buildMenu()`).
+- **Glass buttons:** buttons like Update Logs use `makeGlassButton()` / `glassButton()`. While pressed they turn into clear liquid glass (swell, rim, rainbow fringe, bent text) and spring back on release.
 
 ## Files
 

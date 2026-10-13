@@ -18,6 +18,7 @@
  *   {type:"gallery", items:[{img, caption}]}         pictures
  *   {type:"table", head:[...], rows:[[...], ...]}
  *   {type:"children"}                                cards for the sub-pages
+ *   {type:"changelog"}                               the Update Logs (from changelog)
  *
  * A page can also have quick: ["path", ...]: buttons in its heading box
  * (the home page uses this for "Frequently visited").
@@ -29,7 +30,25 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.2",
+version: "V1.0.3",
+
+/* The Update Logs page (newest first). Add an entry with every new version. */
+changelog: [
+{version: "V1.0.3", date: "13.10.2026", items: [
+"New Update Logs page, opened from the glass button next to the wiki's name. Pressing the button turns it into clear liquid glass for a moment."
+]},
+{version: "V1.0.2", date: "13.10.2026", items: [
+"New 'Frequently visited' buttons on the home page, led by {{tips|Tips & Tricks}}."
+]},
+{version: "V1.0.1", date: "13.10.2026", items: [
+"New {{tips|Tips & Tricks}} page, with its own place in the menu.",
+"New footer: Built by Sylvia Valentina, built with Visual Studio Code."
+]},
+{version: "V1.0.0", date: "13.10.2026", items: [
+"First release of the Rai Season 3 Wiki: 25 pages covering {{agriculture|Agriculture}}, {{industrial|Industrial}}, {{geology|Geology}} and {{alchemy|Alchemy}}, based on JR's Crafting Guide for Season 3.",
+"Search across every page, recipe cards, pictures that open larger, and a melting glass menu on phones."
+]}
+],
 
 /* The menu bar: the home page, the four branches and Tips, each with its own accent colour. */
 sections: [
@@ -427,6 +446,15 @@ blocks: [
 {img: "alchemy-throwables-4.jpg", caption: "Choke Gas"},
 {img: "alchemy-throwables-5.jpg", caption: "Shock Gas"}
 ]}
+]},
+
+/* ---------------- Update Logs (not in the menu: opened from the button in the top bar) ---------------- */
+
+{path: "updates", title: "Update Logs", section: "updates",
+eyebrow: "Rai Season 3 Wiki",
+summary: "Every change to the wiki, newest first.",
+blocks: [
+{type: "changelog"}
 ]},
 
 /* ---------------- Tips & Tricks ---------------- */
