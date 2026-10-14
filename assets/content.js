@@ -30,10 +30,13 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.8",
+version: "V1.0.9",
 
 /* The Update Logs page (newest first). Add an entry with every new version. */
 changelog: [
+{version: "V1.0.9", date: "14.10.2026", items: [
+"New \"page not found\" page: a 404 built from grass and dirt blocks, \"This chunk didn't load\", with buttons back to the wiki and to the search."
+]},
 {version: "V1.0.8", date: "14.10.2026", items: [
 "Links in the text now take the colour of their branch (green for Agriculture, orange for Industrial, gold for Geology, violet for Alchemy, teal for Tips), and so do the See also buttons."
 ]},

@@ -428,3 +428,9 @@ body.wiki .w-article a{color:color-mix(in srgb,var(--accent) 72%,#fff);text-deco
 body.wiki .w-article a:hover{color:color-mix(in srgb,var(--accent) 45%,#fff);text-decoration:underline}
 body.wiki .w-related a{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
 body.wiki .w-related a:hover{background:color-mix(in srgb,var(--accent) 22%,transparent)}
+
+/* "Page not found": a 404 built from grass and dirt blocks, gently floating. */
+.w-404-blocks{display:block;width:clamp(200px,34vw,330px);height:auto;margin:-6px 0 22px;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45));animation:w-float 6s ease-in-out infinite}
+@keyframes w-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+button.m-btn{font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.w-404-blocks{animation:none}}

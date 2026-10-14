@@ -1080,9 +1080,46 @@ else renderMissing(mainEl);
 });
 }
 
+/*
+ * "Page not found": a big 404 built from Minecraft blocks (grass on top
+ * of each digit, dirt below), with buttons home and to the search.
+ */
+function blockDigits(text){
+var FONT={
+"4":["101","101","111","001","001"],
+"0":["111","101","101","101","111"]
+};
+var S=10,gap=1,rects="",x=0;
+text.split("").forEach(function(ch){
+var rows=FONT[ch];
+for(var r=0;r<5;r++){
+for(var c=0;c<3;c++){
+if(rows[r][c]!=="1")continue;
+var bx=(x+c)*S,by=r*S;
+var grass=r===0||rows[r-1][c]!=="1";
+/* Dirt with a darker edge; grass blocks get a green top. */
+rects+='<rect x="'+bx+'" y="'+by+'" width="'+(S-gap)+'" height="'+(S-gap)+'" fill="#8b5a3c"/>';
+rects+='<rect x="'+bx+'" y="'+(by+S-gap-2)+'" width="'+(S-gap)+'" height="2" fill="#6b4329"/>';
+rects+='<rect x="'+(bx+2)+'" y="'+(by+5)+'" width="1" height="1" fill="#a06a47"/><rect x="'+(bx+6)+'" y="'+(by+3)+'" width="1" height="1" fill="#55361f"/>';
+if(grass)rects+='<rect x="'+bx+'" y="'+by+'" width="'+(S-gap)+'" height="3" fill="#5bbf4a"/><rect x="'+bx+'" y="'+(by+3)+'" width="2" height="1" fill="#5bbf4a"/><rect x="'+(bx+5)+'" y="'+(by+3)+'" width="2" height="1" fill="#4fae3e"/>';
+}
+}
+x+=4;
+});
+var w=x*S-S;
+return '<svg class="w-404-blocks" viewBox="0 0 '+w+' '+(5*S)+'" shape-rendering="crispEdges" aria-hidden="true">'+rects+'</svg>';
+}
+
 function renderMissing(main){
-var hero=el("section","m-hero glass");
-hero.innerHTML='<div class="m-hero-orb" aria-hidden="true"></div><span class="m-eyebrow">Error 404</span><h1>Page not found</h1><p class="m-lead">This page doesn\'t exist (yet). Try the search, or pick a branch below.</p>';
+var hero=el("section","m-hero glass w-404");
+hero.innerHTML=
+'<div class="m-hero-orb" aria-hidden="true"></div>'+
+blockDigits("404")+
+'<span class="m-eyebrow">Error 404</span>'+
+'<h1>This chunk didn\'t load</h1>'+
+'<p class="m-lead">The page you\'re looking for isn\'t in this world. It may have moved, or it was never generated. Try the search, or pick a branch below.</p>'+
+'<div class="m-actions"><a class="m-btn m-btn-primary" href="'+urlOf("")+'">Back to the wiki</a><button type="button" class="m-btn w-404-search">Search the wiki</button></div>';
+hero.querySelector(".w-404-search").addEventListener("click",function(){openSearch();});
 main.appendChild(hero);
 var cards=childCards(PAGES[""]);
 cards.classList.add("m-section");
