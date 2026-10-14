@@ -30,10 +30,14 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.6",
+version: "V1.0.7",
 
 /* The Update Logs page (newest first). Add an entry with every new version. */
 changelog: [
+{version: "V1.0.7", date: "14.10.2026", items: [
+"Shredder: a table of everything it grinds and what each powder is used for, and its recipe written out.",
+"Consumables and Throwables: every alchemy process written out step by step, read from the process pictures."
+]},
 {version: "V1.0.6", date: "14.10.2026", items: [
 "The wiki now uses the Rai server's emblem as its logo, in the top bar and as the browser tab icon."
 ]},
@@ -194,8 +198,19 @@ image: "industrial-shredder-1.png",
 summary: "The machine that grinds ores and minerals into powder.",
 blocks: [
 {type: "text", html: "The Shredder is essential for alloys and other industrial recipes. It grinds ores and minerals into powder for further processing."},
-{type: "recipes", items: [{img: "industrial-shredder-1.png", name: "Shredder", note: "See the picture for the recipe"}]},
+{type: "recipes", items: [{img: "industrial-shredder-1.png", name: "Shredder", note: "Top row: 3 dark stone blocks. Middle row: Iron Ingot, empty, Iron Ingot. Bottom row: Iron Ingot, a light stone block, Iron Ingot (see the picture)."}]},
 {type: "heading", text: "What it grinds"},
+{type: "table", head: ["Put in", "Get out", "Used for"], rows: [
+["Coal", "Coal Powder", "{{industrial/steel-alloys|Steel}}"],
+["Iron Ingot", "Iron Powder", "{{industrial/steel-alloys|Steel}}, {{geology/rare-ores/multi-ore-compound|Multi-Ore Ingots}}"],
+["Copper Ingot", "Copper Powder", "{{industrial/steel-alloys|Bronze}}"],
+["Tin Ingot", "Tin Powder", "{{industrial/steel-alloys|Bronze}}"],
+["Charcoal", "Charcoal Powder", "Blackpowder ({{industrial/ammunitions|Ammunitions}})"],
+["Diamond", "Diamond Powder", "{{geology/rare-ores/cherry-ore|Cherry Ingots}}"],
+["Multi-Ore crystals", "Multi-Ore Powder", "{{geology/rare-ores/multi-ore-compound|Multi-Ore Ingots}}"],
+["Blazeroot Plant", "Blazeroot Powder", "{{alchemy/consumables|Stim Mixture}}, {{alchemy/throwables|Flame Batch, Volatile Compound}}"],
+["Anetherbloom Flower", "Anetherbloom Powder", "{{alchemy/throwables|Volatile Compound, Shock Gas}}"]
+]},
 {type: "gallery", items: [
 {img: "industrial-shredder-2.png", caption: "The Shredder's menu: coal, iron, diamond, rare ore and more, each into powder"},
 {img: "industrial-shredder-3.png", caption: "Charcoal into Charcoal Powder"}
@@ -429,6 +444,19 @@ blocks: [
 ["Anetherbloom Distillate", "Major Regeneration for a short time, and Speed, Resistance, Jump Boost and Strength for a medium time"]
 ]},
 {type: "text", html: "Each one is made in a sequence of steps through the {{alchemy/machines|alchemy machines}}, from {{alchemy/crops|alchemy crops}}."},
+{type: "steps", title: "Regeneration Tonic", items: [
+"Put a Sundew Herb in the Centrifuge to get Regeneration Extract.",
+"Put the Regeneration Extract in the Chemistry Bench to get a Regeneration Tonic."
+]},
+{type: "steps", title: "Stim Mixture", items: [
+"Put a Blazeroot Plant in the {{industrial/shredder|Shredder}} to get Blazeroot Powder.",
+"Put a Sundew Herb in the Centrifuge to get Regeneration Extract.",
+"Put the Blazeroot Powder and the Regeneration Extract in the Chemistry Bench to get a Stim Mixture."
+]},
+{type: "steps", title: "Anetherbloom Distillate", items: [
+"Put an Anetherbloom Flower in the Centrifuge to get Anetherbloom Extract.",
+"Put the Anetherbloom Extract in the Distillation Setup to get an Anetherbloom Distillate."
+]},
 {type: "gallery", items: [
 {img: "alchemy-consumables-1.jpg", caption: "Regeneration Tonic"},
 {img: "alchemy-consumables-2.jpg", caption: "Stim Mixture"},
@@ -449,6 +477,27 @@ blocks: [
 ["Shock Gas", "A gas cloud with major negative effects, like Wither, Weakness and Slowness"]
 ]},
 {type: "text", html: "Each one is made in a sequence of steps through the {{alchemy/machines|alchemy machines}}."},
+{type: "steps", title: "Flame Batch", items: [
+"Put a Blazeroot Plant in the {{industrial/shredder|Shredder}} to get Blazeroot Powder.",
+"Put the Blazeroot Powder and Gunpowder in the Chemistry Bench to get a Flame Batch."
+]},
+{type: "steps", title: "Volatile Compound", items: [
+"Put an Anetherbloom Flower in the Shredder to get Anetherbloom Powder.",
+"Put a Blazeroot Plant in the Shredder to get Blazeroot Powder.",
+"Put both powders in the Chemistry Bench to get a Volatile Compound."
+]},
+{type: "steps", title: "Smoke Canister", items: [
+"Put Gunpowder and {{industrial/ammunitions|Blackpowder}} in the Chemistry Bench to get a Smoke Canister."
+]},
+{type: "steps", title: "Choke Gas", items: [
+"Put a Nightshade Flower in the Centrifuge to get Toxic Extract.",
+"Put the Toxic Extract and a Glass Bottle in the Gas Extractor to get Choke Gas."
+]},
+{type: "steps", title: "Shock Gas", items: [
+"Put an Anetherbloom Flower in the Shredder to get Anetherbloom Powder.",
+"Put a Nightshade Flower in the Centrifuge to get Toxic Extract.",
+"Put the Anetherbloom Powder and the Toxic Extract in the Gas Extractor to get Shock Gas."
+]},
 {type: "gallery", items: [
 {img: "alchemy-throwables-1.jpg", caption: "Flame Batch"},
 {img: "alchemy-throwables-2.jpg", caption: "Volatile Compound"},
