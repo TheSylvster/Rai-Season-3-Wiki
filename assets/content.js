@@ -30,10 +30,13 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.7",
+version: "V1.0.8",
 
 /* The Update Logs page (newest first). Add an entry with every new version. */
 changelog: [
+{version: "V1.0.8", date: "14.10.2026", items: [
+"Links in the text now take the colour of their branch (green for Agriculture, orange for Industrial, gold for Geology, violet for Alchemy, teal for Tips), and so do the See also buttons."
+]},
 {version: "V1.0.7", date: "14.10.2026", items: [
 "Shredder: a table of everything it grinds and what each powder is used for, and its recipe written out.",
 "Consumables and Throwables: every alchemy process written out step by step, read from the process pictures."

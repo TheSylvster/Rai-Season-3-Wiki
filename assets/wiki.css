@@ -422,3 +422,9 @@ body.wiki .m-log-head h3{font-size:20px}
 
 /* The landscape's three parallax layers (sky, far hills, near hills), moved by the script. */
 .w-layer{position:absolute;left:0;top:0;will-change:transform}
+
+/* Links in the text take the branch colour (a lighter tint, so they stay easy to read). */
+body.wiki .w-article a{color:color-mix(in srgb,var(--accent) 72%,#fff);text-decoration-color:color-mix(in srgb,var(--accent) 50%,transparent);text-underline-offset:3px;transition:color .2s ease}
+body.wiki .w-article a:hover{color:color-mix(in srgb,var(--accent) 45%,#fff);text-decoration:underline}
+body.wiki .w-related a{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent)}
+body.wiki .w-related a:hover{background:color-mix(in srgb,var(--accent) 22%,transparent)}
