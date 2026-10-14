@@ -198,7 +198,7 @@ image: "industrial-shredder-1.png",
 summary: "The machine that grinds ores and minerals into powder.",
 blocks: [
 {type: "text", html: "The Shredder is essential for alloys and other industrial recipes. It grinds ores and minerals into powder for further processing."},
-{type: "recipes", items: [{img: "industrial-shredder-1.png", name: "Shredder", note: "Top row: 3 dark stone blocks. Middle row: Iron Ingot, empty, Iron Ingot. Bottom row: Iron Ingot, a light stone block, Iron Ingot (see the picture)."}]},
+{type: "recipes", items: [{img: "industrial-shredder-1.png", name: "Shredder", note: "Top row: 3 dark stone blocks. Middle row: Iron Ingot, empty, Iron Ingot. Bottom row: Iron Ingot, Iron Block, Iron Ingot."}]},
 {type: "heading", text: "What it grinds"},
 {type: "table", head: ["Put in", "Get out", "Used for"], rows: [
 ["Coal", "Coal Powder", "{{industrial/steel-alloys|Steel}}"],
