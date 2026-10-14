@@ -21,8 +21,8 @@ var siteRoot=new URL("../",document.currentScript.src).href;
 var imageRoot=siteRoot+"images/";
 
 /* The menu bar: Home and the four branches. */
-/* The wiki's logo: a little pixel grass block. */
-var BLOCK_MARK='<svg class="w-block-mark" viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges"><path fill="#6fd25a" d="M8 1 15 4.5 8 8 1 4.5z"/><path fill="#4fae3e" d="M8 2.5 12 4.5 8 6.5 4 4.5z"/><path fill="#8b5a3c" d="M1 4.5 8 8v7L1 11.5z"/><path fill="#6b4329" d="M15 4.5 8 8v7l7-3.5z"/><path fill="#5bbf4a" d="M1 4.5 8 8v1.6L1 6.1z"/><path fill="#3f9a35" d="M15 4.5 8 8v1.6l7-3.5z"/><path fill="#a06a47" d="M3 8h1v1H3zM5 10h1v1H5zM3 11h1v1H3z"/><path fill="#55361f" d="M10 10h1v1h-1zM12 8h1v1h-1zM12 11h1v1h-1z"/></svg>';
+/* The wiki's logo: the Rai server emblem. */
+var BLOCK_MARK='<img class="w-logo-mark" src="'+siteRoot+'images/rai-logo.png" alt="" width="34" height="32">';
 
 var NAV=WIKI.sections.map(function(s){return {label:s.label,path:s.path};});
 

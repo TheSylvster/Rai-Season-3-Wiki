@@ -22,7 +22,7 @@ sub shell {
 <title>$title</title>
 <meta name="description" content="$summary">
 <meta name="theme-color" content="#070b1a">
-<link rel="icon" href="${prefix}assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="${prefix}assets/icon.png" type="image/png">
 <link rel="stylesheet" href="${prefix}assets/wiki.css">
 </head>
 <body class="wiki" data-page="$page">

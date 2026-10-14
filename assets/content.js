@@ -30,10 +30,13 @@
 window.WIKI = {
 
 name: "Rai Season 3 Wiki",
-version: "V1.0.5",
+version: "V1.0.6",
 
 /* The Update Logs page (newest first). Add an entry with every new version. */
 changelog: [
+{version: "V1.0.6", date: "14.10.2026", items: [
+"The wiki now uses the Rai server's emblem as its logo, in the top bar and as the browser tab icon."
+]},
 {version: "V1.0.5", date: "13.10.2026", items: [
 "Parallax: the dusk landscape is now three layers (sky, far hills, near hills) that move at different speeds as you scroll, and shift a little with the mouse.",
 "The landscape is drawn bigger than the screen, so it fills wide and tall screens, and the thin lines between its blocks are gone."
